@@ -14,7 +14,7 @@ const serviceaccounts = [{
 	"universe_domain": "googleapis.com"
 }]; // This is a Example Service Account, generate your own using Google Cloud Console
 const authConfig = {
-  "version": "v1.0"
+  "version": "v1.0",
 	"client_id": "", // Client id from Google Cloud Console
 	"client_secret": "", // Client Secret from Google Cloud Console
 	"refresh_token": "", // Authorize token
@@ -23,10 +23,12 @@ const authConfig = {
 	"allow_direct_id_downloads": true, // true if you want to allow direct downloads using file id
 	"allow_fetching_file_info": true, // true if you want to allow fetching file info using file id
 	"allow_generating_links": true, // true if you want to allow generating links using file id
-	"file_link_expiry": 7, // file link expiry in days 
+  "allow_downloading_files": true, // true if you want to allow downloading token based files
+	"file_link_expiry": 7, // file link expiry in days
 }
 const crypto_base_key = "3225f86e99e205347b4310e437253bfd" // Example 256 bit key used, generate your own.
 const encrypt_iv = new Uint8Array([247, 254, 106, 195, 32, 148, 131, 244, 222, 133, 26, 182, 20, 138, 215, 81]); // Example 128 bit IV used, generate your own.
+const token = ""; // Token for accessing the API, leave it blank if you don't want to use it.
 
 addEventListener('fetch', event => {
   event.respondWith(
@@ -40,14 +42,20 @@ addEventListener('fetch', event => {
 async function handleRequest(request) {
 	const url = new URL(request.url);
 	const path = url.pathname;
-
+  const user_token = url.searchParams.get('token')
   if (path === "/") {
     return new Response(html, {
       headers: {
         "content-type": "text/html;charset=UTF-8",
       },
     });
-  } else if (path === "/download.aspx") {
+  }
+  if (token === "" && !user_token) {
+    console.log("Skipping Token Check");
+  } else if (token !== "" && token !== user_token) {
+    return error_page("Invalid token.");
+  }
+  if (path === "/download.aspx" && authConfig.allow_downloading_files) {
 		try {
 			const file = await decryptString(url.searchParams.get('file'));
 			const expiry = await decryptString(url.searchParams.get('expiry'));
