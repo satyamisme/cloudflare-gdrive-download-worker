@@ -7,7 +7,7 @@ Note: The Project can be deployed by copy pasting worker.js file, while technica
 * Use of Refresh Token with Client Credentials
 * Use of Service Account
 * Web Crypto API 256 bit Key
-* Web Crypto API 64 bit iv
+* Web Crypto API 128 bit iv
 
 ## Available Functions
 
