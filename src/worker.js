@@ -14,6 +14,7 @@ const serviceaccounts = [{
 	"universe_domain": "googleapis.com"
 }]; // This is a Example Service Account, generate your own using Google Cloud Console
 const authConfig = {
+  "version": "v1.0"
 	"client_id": "", // Client id from Google Cloud Console
 	"client_secret": "", // Client Secret from Google Cloud Console
 	"refresh_token": "", // Authorize token
